@@ -1,22 +1,42 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   input.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: engiacom <engiacom@student.42perpignan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/29 17:22:27 by engiacom          #+#    #+#             */
-/*   Updated: 2025/04/30 04:01:37 by engiacom         ###   ########.fr       */
+/*   Created: 2025/04/30 00:40:35 by engiacom          #+#    #+#             */
+/*   Updated: 2025/04/30 05:00:03 by engiacom         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/minishell.h"
+#include "minishell.h"
 
-int	main(int ac, char **av, char **env)
+void	print(t_arg *arg)
 {
-	t_data data;
+	while (arg)
+	{
+		printf("%s\n", arg->value);
+		arg = arg->next;
+	}
+}
 
-	data.arg = NULL;
-	read_input(&data);
-	rl_clear_history();
+int	read_input(t_data *data)
+{
+	char	*line;
+	int		i;
+
+	i = 0;
+	while (1)
+	{
+		line = readline("minishell$ ");
+		if (!line)
+			break;
+		parser(line, &data->arg);
+		print(data->arg);
+		if (*line != '\0')
+			add_history(line);
+		free(line);
+	}
+	return (0);
 }

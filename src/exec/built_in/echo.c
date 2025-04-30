@@ -1,22 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: engiacom <engiacom@student.42perpignan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/29 17:22:27 by engiacom          #+#    #+#             */
-/*   Updated: 2025/04/30 04:01:37 by engiacom         ###   ########.fr       */
+/*   Created: 2025/04/30 01:57:09 by nitadros          #+#    #+#             */
+/*   Updated: 2025/04/30 05:00:55 by engiacom         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/minishell.h"
+#include "minishell.h"
 
-int	main(int ac, char **av, char **env)
-{
-	t_data data;
+// int	echo(char **arg)
+// {
+// 	int	i;
+// 	int	newline;
 
-	data.arg = NULL;
-	read_input(&data);
-	rl_clear_history();
-}
+// 	i = 1;
+// 	newline = 1;
+// 	if (arg[1] && !ft_strcmp(arg[1], "-n"))
+// 	{
+// 		newline = 0;
+// 		i++;
+// 	}
+// 	while(arg[i])
+// 	{
+// 		printf("%s", arg[i]);
+// 		if (arg[i + 1])
+// 			printf(" ");
+// 		i++;
+// 	}
+// 	if (newline)
+// 		printf("\n");
+// 	return (1);
+// }

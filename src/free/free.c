@@ -1,22 +1,14 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   free.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: engiacom <engiacom@student.42perpignan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/29 17:22:27 by engiacom          #+#    #+#             */
-/*   Updated: 2025/04/30 04:01:37 by engiacom         ###   ########.fr       */
+/*   Created: 2025/04/30 04:34:50 by engiacom          #+#    #+#             */
+/*   Updated: 2025/04/30 04:35:29 by engiacom         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/minishell.h"
+#include "minishell.h"
 
-int	main(int ac, char **av, char **env)
-{
-	t_data data;
-
-	data.arg = NULL;
-	read_input(&data);
-	rl_clear_history();
-}
