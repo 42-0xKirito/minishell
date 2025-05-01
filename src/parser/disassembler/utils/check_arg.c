@@ -6,7 +6,7 @@
 /*   By: engiacom <engiacom@student.42perpignan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 14:32:01 by engiacom          #+#    #+#             */
-/*   Updated: 2025/04/30 16:33:45 by engiacom         ###   ########.fr       */
+/*   Updated: 2025/05/01 18:31:56 by engiacom         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 
 int	check_quote(char *line)
 {
-	int	q;
-	int	dq;
-	int	i;
+	int		q;
+	int		dq;
+	int		i;
 
 	q = 0;
 	dq = 0;

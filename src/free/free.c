@@ -6,27 +6,69 @@
 /*   By: engiacom <engiacom@student.42perpignan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 04:34:50 by engiacom          #+#    #+#             */
-/*   Updated: 2025/04/30 14:29:12 by engiacom         ###   ########.fr       */
+/*   Updated: 2025/05/01 18:40:14 by engiacom         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../include/minishell.h"
 
-void	ft_lstclear_m(t_arg **lst)
+void	ft_lstclear_r(t_redir **lst)
 {
-	t_arg	*tmp;
+	t_redir	*tmp;
 
 	while (*lst != NULL)
 	{
 		tmp = (*lst)->next;
-		(*lst)->type = 0;
-		if ((*lst)->value)
+		if ((*lst)->target)
 		{
-			(*lst)->value = NULL;
-			free ((*lst)->value);
+			printf("REDIR\n");
+			free ((*lst)->target);
 		}
 		free ((*lst));
 		*lst = tmp;
+	}
+	*lst = NULL;
+}
+
+void	ft_lstclear_c(t_cmd **lst)
+{
+	t_cmd	*tmp;
+	int		i;
+
+	i = 0;
+	while (*lst != NULL)
+	{
+		tmp = (*lst)->next;
+		if ((*lst)->bin)
+		{
+			while ((*lst)->bin[i])
+			{
+				free((*lst)->bin[i]);
+				i++;
+			}
+			free((*lst)->bin);
+		}
+		ft_lstclear_r(&(*lst)->redirection);
+		free ((*lst));
+		*lst = tmp;
+	}
+	*lst = NULL;
+}
+
+void	ft_lstclear_m(t_arg **lst)
+{
+	t_arg	*current;
+	t_arg	*next;
+
+	if (!lst)
+		return ;
+	current = *lst;
+	while (current)
+	{
+		next = current->next;
+		free(current->value);
+		free(current);
+		current = next;
 	}
 	*lst = NULL;
 }

@@ -5,33 +5,31 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: engiacom <engiacom@student.42perpignan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/30 00:40:35 by engiacom          #+#    #+#             */
-/*   Updated: 2025/04/30 16:28:15 by engiacom         ###   ########.fr       */
+/*   Created: 2025/04/29 22:45:35 by nitadros          #+#    #+#             */
+/*   Updated: 2025/05/01 18:29:34 by engiacom         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	print(t_arg *arg)
-{
-	while (arg)
-	{
-		printf("%s\n", arg->value);
-		arg = arg->next;
-	}
-}
-
+// void    print(t_arg *arg)
+// {
+//     while (arg)
+//     {
+//         printf("%s\n", arg->value);
+//         arg = arg->next;
+//     }
+// 	printf("\n");
+// }
 int	read_input(t_data *data)
 {
 	char	*line;
-	int		i;
 
-	i = 0;
 	while (1)
 	{
 		line = readline("minishell$ ");
 		if (!line)
-			break;
+			break ;
 		if (*line != '\0')
 			add_history(line);
 		if (!check_quote(line))
@@ -39,15 +37,19 @@ int	read_input(t_data *data)
 			parser(line, &data->arg);
 			if (!check_pipe(data->arg))
 			{
-				print(data->arg);
-				free(line);
+				expanser(&data->arg);
+				reassembler(data);
 			}
 			else
 				printf("rl_on_new_line\n");
-			ft_lstclear_m(&data->arg);
 		}
 		else
-				printf("rl_on_new_line\n");
+		{
+			printf("rl_on_new_line\n");
+		}
+		free(line);
+		ft_lstclear_m(&data->arg);
+		ft_lstclear_c(&data->cmd);
 	}
 	return (0);
 }
