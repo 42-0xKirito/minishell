@@ -6,7 +6,7 @@
 /*   By: engiacom <engiacom@student.42perpignan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 17:22:24 by engiacom          #+#    #+#             */
-/*   Updated: 2025/04/30 05:14:32 by engiacom         ###   ########.fr       */
+/*   Updated: 2025/04/30 16:33:31 by engiacom         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,8 @@ int	main(int ac, char **av, char **env);
 
 // PARSER
 int	parser(char *line, t_arg **arg);
+int	check_pipe(t_arg *arg);
+int	check_quote(char *line);
 
 // EXEC
 //int	echo(char **arg);
@@ -60,3 +62,6 @@ int	parser(char *line, t_arg **arg);
 t_arg	*ft_lstnew_m(t_token_type type, char *value);
 void	ft_lstadd_back_m(t_arg **arg, t_arg *new);
 int		is_separator(char c);
+
+// FREE
+void	ft_lstclear_m(t_arg **lst);

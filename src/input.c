@@ -6,7 +6,7 @@
 /*   By: engiacom <engiacom@student.42perpignan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 00:40:35 by engiacom          #+#    #+#             */
-/*   Updated: 2025/04/30 05:00:03 by engiacom         ###   ########.fr       */
+/*   Updated: 2025/04/30 16:28:15 by engiacom         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,11 +32,22 @@ int	read_input(t_data *data)
 		line = readline("minishell$ ");
 		if (!line)
 			break;
-		parser(line, &data->arg);
-		print(data->arg);
 		if (*line != '\0')
 			add_history(line);
-		free(line);
+		if (!check_quote(line))
+		{
+			parser(line, &data->arg);
+			if (!check_pipe(data->arg))
+			{
+				print(data->arg);
+				free(line);
+			}
+			else
+				printf("rl_on_new_line\n");
+			ft_lstclear_m(&data->arg);
+		}
+		else
+				printf("rl_on_new_line\n");
 	}
 	return (0);
 }
