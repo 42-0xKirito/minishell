@@ -6,7 +6,7 @@
 /*   By: engiacom <engiacom@student.42perpignan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 04:34:50 by engiacom          #+#    #+#             */
-/*   Updated: 2025/05/01 18:40:14 by engiacom         ###   ########.fr       */
+/*   Updated: 2025/05/01 18:42:47 by engiacom         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,7 @@ void	ft_lstclear_r(t_redir **lst)
 	{
 		tmp = (*lst)->next;
 		if ((*lst)->target)
-		{
-			printf("REDIR\n");
 			free ((*lst)->target);
-		}
 		free ((*lst));
 		*lst = tmp;
 	}
