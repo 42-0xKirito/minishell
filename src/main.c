@@ -6,7 +6,7 @@
 /*   By: engiacom <engiacom@student.42perpignan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 17:22:27 by engiacom          #+#    #+#             */
-/*   Updated: 2025/05/01 18:30:02 by engiacom         ###   ########.fr       */
+/*   Updated: 2025/05/02 12:15:33 by engiacom         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ int	main(int ac, char **av, char **env)
 	(void)av;
 	(void)env;
 	data.arg = NULL;
+	data.cmd = NULL;
 	read_input(&data);
 	rl_clear_history();
 }

@@ -6,7 +6,7 @@
 /*   By: engiacom <engiacom@student.42perpignan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 11:45:52 by nitadros          #+#    #+#             */
-/*   Updated: 2025/05/02 03:08:13 by engiacom         ###   ########.fr       */
+/*   Updated: 2025/05/02 13:53:58 by engiacom         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ void	parse_words(t_arg **arg, char **bin)
 		i++;
 		*arg = (*arg)->next;
 	}
+	bin[i] = NULL;
 }
 
 int	parse_redirection(t_arg **arg, t_redir **redir)
@@ -62,7 +63,7 @@ int	parse_redirection(t_arg **arg, t_redir **redir)
 		tmp = R_APPEND;
 	else if ((*arg)->type == T_R_IN)
 		tmp = R_IN;
-	else if (((*arg)->type == T_HEREDOC))
+	else if ((*arg)->type == T_HEREDOC)
 		tmp = R_HEREDOC;
 	*arg = (*arg)->next;
 	if (!*arg)

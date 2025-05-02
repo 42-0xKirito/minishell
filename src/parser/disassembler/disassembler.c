@@ -6,7 +6,7 @@
 /*   By: engiacom <engiacom@student.42perpignan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 01:57:12 by engiacom          #+#    #+#             */
-/*   Updated: 2025/05/02 02:57:28 by engiacom         ###   ########.fr       */
+/*   Updated: 2025/05/02 12:20:12 by engiacom         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ int	token_var_qmark(char *c, int i, t_arg **arg)
 		k++;
 		s = ft_substr(c, i, k);
 		ft_lstadd_back_m(arg, ft_lstnew_m(T_VAR, s));
+		free(s);
 	}
 	return (k);
 }

@@ -6,7 +6,7 @@
 /*   By: engiacom <engiacom@student.42perpignan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 04:34:50 by engiacom          #+#    #+#             */
-/*   Updated: 2025/05/01 18:42:47 by engiacom         ###   ########.fr       */
+/*   Updated: 2025/05/02 13:55:55 by engiacom         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,19 +32,17 @@ void	ft_lstclear_c(t_cmd **lst)
 	t_cmd	*tmp;
 	int		i;
 
-	i = 0;
 	while (*lst != NULL)
 	{
+		i = 0;
 		tmp = (*lst)->next;
-		if ((*lst)->bin)
+		while ((*lst)->bin[i])
 		{
-			while ((*lst)->bin[i])
-			{
-				free((*lst)->bin[i]);
-				i++;
-			}
-			free((*lst)->bin);
+			free((*lst)->bin[i]);
+			i++;
 		}
+		if ((*lst)->bin)
+			free((*lst)->bin);
 		ft_lstclear_r(&(*lst)->redirection);
 		free ((*lst));
 		*lst = tmp;

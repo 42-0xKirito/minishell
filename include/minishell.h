@@ -6,7 +6,7 @@
 /*   By: engiacom <engiacom@student.42perpignan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 17:22:24 by engiacom          #+#    #+#             */
-/*   Updated: 2025/05/02 03:11:58 by engiacom         ###   ########.fr       */
+/*   Updated: 2025/05/02 12:08:17 by engiacom         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,5 +110,7 @@ int		token_r_right(char *c, int i, t_arg **arg);
 int		token_r_left(char *c, int i, t_arg **arg);
 int		token_word(char *c, int i, t_arg **arg, int v);
 void	reassembler_check(t_arg **arg, t_cmd **cmd);
+
+void	rl_clear_history(void);
 
 #endif
