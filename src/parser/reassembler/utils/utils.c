@@ -6,7 +6,7 @@
 /*   By: engiacom <engiacom@student.42perpignan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 16:51:05 by engiacom          #+#    #+#             */
-/*   Updated: 2025/05/01 16:51:08 by engiacom         ###   ########.fr       */
+/*   Updated: 2025/05/02 03:07:38 by engiacom         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,4 +38,25 @@ void	ft_lstadd_back_r(t_redir **arg, t_redir *new)
 			tmp = tmp->next;
 		tmp->next = new;
 	}
+}
+
+void	reassembler_check(t_arg **arg, t_cmd **cmd)
+{
+	if (*arg && (*arg)->type == T_PIPE)
+	{
+		(*cmd)->pipe = 1;
+		*arg = (*arg)->next;
+	}
+}
+
+int	check_token_redir(t_token_type token)
+{
+	return (token == T_R_IN || token == T_R_OUT
+		|| token == T_HEREDOC || token == T_APPEND);
+}
+
+int	check_token_word(t_token_type token)
+{
+	return (token == T_WORD || token == T_QUOTE
+		|| token == T_DQUOTE || token == T_VAR);
 }

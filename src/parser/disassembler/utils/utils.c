@@ -6,17 +6,11 @@
 /*   By: engiacom <engiacom@student.42perpignan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 02:14:32 by engiacom          #+#    #+#             */
-/*   Updated: 2025/05/01 18:32:47 by engiacom         ###   ########.fr       */
+/*   Updated: 2025/05/02 02:58:20 by engiacom         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-int	is_separator(char c)
-{
-	return (c == ' ' || c == '\t' || c == '|' || c == '<' || c == '>'
-		|| c == '\'' || c == '\"' || c == '$');
-}
 
 t_arg	*ft_lstnew_m(t_token_type type, char *value)
 {
@@ -46,4 +40,58 @@ void	ft_lstadd_back_m(t_arg **lst, t_arg *new)
 	while (tmp->next)
 		tmp = tmp->next;
 	tmp->next = new;
+}
+
+int	token_r_right(char *c, int i, t_arg **arg)
+{
+	if (c[i] && c[i] == '>')
+	{
+		if (c[i + 1] && c[i + 1] == '>')
+		{
+			ft_lstadd_back_m(arg, ft_lstnew_m(T_APPEND, ">>"));
+			return (2);
+		}
+		else
+		{
+			ft_lstadd_back_m(arg, ft_lstnew_m(T_R_OUT, ">"));
+			return (1);
+		}
+	}
+	return (0);
+}
+
+int	token_r_left(char *c, int i, t_arg **arg)
+{
+	if (c[i] && c[i] == '<')
+	{
+		if (c[i + 1] && c[i + 1] == '<')
+		{
+			ft_lstadd_back_m(arg, ft_lstnew_m(T_HEREDOC, "<<"));
+			return (2);
+		}
+		else
+		{
+			ft_lstadd_back_m(arg, ft_lstnew_m(T_R_IN, "<"));
+			return (1);
+		}
+	}
+	return (0);
+}
+
+int	token_word(char *c, int i, t_arg **arg, int v)
+{
+	int		k;
+	char	*s;
+
+	k = v;
+	while (c[i + k] && !(is_separator(c[i + k])))
+		k++;
+	if (k > 0)
+	{
+		s = ft_substr(c, i, k);
+		ft_lstadd_back_m(arg, ft_lstnew_m(T_WORD, s));
+		free(s);
+		return (k);
+	}
+	return (k);
 }

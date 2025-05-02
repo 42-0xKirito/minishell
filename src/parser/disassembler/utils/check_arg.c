@@ -6,7 +6,7 @@
 /*   By: engiacom <engiacom@student.42perpignan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 14:32:01 by engiacom          #+#    #+#             */
-/*   Updated: 2025/05/01 18:31:56 by engiacom         ###   ########.fr       */
+/*   Updated: 2025/05/02 02:57:52 by engiacom         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,11 +43,37 @@ int	check_pipe(t_arg *arg)
 	p = 0;
 	while (arg)
 	{
-		if (arg->type == T_PIPE)
+		if ((check_token_redir(arg->type) || arg->type == T_PIPE) && p == 1)
+			return (1);
+		else if (arg->type == T_PIPE)
 			p = 1;
-		if (arg->type == T_WORD && p == 1)
+		if ((!arg->next || !(arg->next->type == T_WORD
+					|| arg->next->type == T_QUOTE
+					|| arg->next->type == T_DQUOTE)) && p == 1)
+			return (1);
+		else
 			p = 0;
 		arg = arg->next;
 	}
 	return (p);
+}
+
+int	check_redir_legit(t_arg *arg)
+{
+	while (arg)
+	{
+		if (check_token_redir(arg->type))
+		{
+			if (!(arg->next) || !(check_token_word(arg->next->type)))
+				return (1);
+		}
+		arg = arg->next;
+	}
+	return (0);
+}
+
+int	is_separator(char c)
+{
+	return (c == ' ' || c == '\t' || c == '|' || c == '<' || c == '>'
+		|| c == '\'' || c == '\"' || c == '$');
 }

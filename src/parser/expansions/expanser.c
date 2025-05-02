@@ -6,70 +6,77 @@
 /*   By: engiacom <engiacom@student.42perpignan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 12:15:52 by nitadros          #+#    #+#             */
-/*   Updated: 2025/05/01 18:34:09 by engiacom         ###   ########.fr       */
+/*   Updated: 2025/05/02 02:57:13 by engiacom         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+static void	expand_utils(t_expansion *exp, int *i, int *k)
+{
+	exp->ret = ft_substr(exp->new_str, *i + 1, *k - 1);
+	exp->env = getenv(exp->ret);
+	free(exp->ret);
+	if (!exp->env)
+		exp->env = "";
+	exp->left = ft_substr(exp->new_str, 0, *i);
+	exp->right = ft_strdup(&exp->new_str[*i + *k]);
+	exp->joined = ft_strjoin(exp->left, exp->env);
+	free(exp->left);
+	exp->left = ft_strjoin(exp->joined, exp->right);
+	free(exp->joined);
+	free(exp->right);
+	free(exp->new_str);
+	exp->new_str = exp->left;
+}
+
+static void	init_expansions(t_expansion *exp, char *str)
+{
+	exp->ret = NULL;
+	exp->env = NULL;
+	exp->left = NULL;
+	exp->right = NULL;
+	exp->joined = NULL;
+	exp->new_str = ft_strdup(str);
+}
+
 static void	expand(char *str, t_arg **arg)
 {
-	int		i = 0;
-	int		k;
-	char	*ret = NULL;
-	char	*env = NULL;
-	char	*left = NULL;
-	char	*right = NULL;
-	char	*joined = NULL;
-	char	*new_str = ft_strdup(str);  // point de départ
+	int			i;
+	int			k;
+	t_expansion	exp;
 
-	while (new_str[i])
+	i = 0;
+	init_expansions(&exp, str);
+	while (exp.new_str[i])
 	{
-		if (new_str[i] == '$')
+		if (exp.new_str[i] == '$')
 		{
 			k = 1;
-			while (new_str[i + k] && (ft_isalnum(new_str[i + k]) || new_str[i + k] == '_'))
+			while (exp.new_str[i + k] && (ft_isalnum(exp.new_str[i + k])
+					|| exp.new_str[i + k] == '_'))
 				k++;
-
-			ret = ft_substr(new_str, i + 1, k - 1);
-			env = getenv(ret);
-			free(ret);
-			if (!env)
-				env = "";
-
-			left = ft_substr(new_str, 0, i);
-			right = ft_strdup(&new_str[i + k]);
-
-			joined = ft_strjoin(left, env);
-			free(left);
-			left = ft_strjoin(joined, right);
-			free(joined);
-			free(right);
-			free(new_str);
-
-			new_str = left;
-			i += ft_strlen(env);  // on saute la variable déjà expandée
-			continue;
+			expand_utils(&exp, &i, &k);
+			i += ft_strlen(exp.env);
+			continue ;
 		}
 		i++;
 	}
-
 	free((*arg)->value);
-	(*arg)->value = new_str;
+	(*arg)->value = exp.new_str;
 }
-
 
 static int	need_expansion(char *str)
 {
 	int	i;
 
 	i = 0;
-	while(str[i])
+	while (str[i])
 	{
 		if (str[i] == '$' && str[i + 1])
 		{
 			if (ft_isalpha(str[i + 1]) || str[i] == '_')
-				return (1);			
+				return (1);
 		}
 		i++;
 	}
@@ -78,11 +85,10 @@ static int	need_expansion(char *str)
 
 void	expanser(t_arg **arg)
 {
-	t_arg *curr;
+	t_arg	*curr;
 
 	if (!arg || !*arg || !(*arg)->value)
 		return ;
-
 	curr = *arg;
 	while (curr)
 	{

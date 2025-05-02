@@ -6,23 +6,11 @@
 /*   By: engiacom <engiacom@student.42perpignan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 11:45:52 by nitadros          #+#    #+#             */
-/*   Updated: 2025/05/01 18:33:30 by engiacom         ###   ########.fr       */
+/*   Updated: 2025/05/02 03:08:13 by engiacom         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-int	check_token_redir(t_token_type token)
-{
-	return (token == T_R_IN || token == T_R_OUT
-		|| token == T_HEREDOC || token == T_APPEND);
-}
-
-int	check_token_word(t_token_type token)
-{
-	return (token == T_WORD || token == T_QUOTE
-		|| token == T_DQUOTE || token == T_VAR);
-}
 
 t_cmd	*append_new_cmd(t_cmd **head, t_cmd **last)
 {
@@ -37,6 +25,7 @@ t_cmd	*append_new_cmd(t_cmd **head, t_cmd **last)
 		free(new);
 		return (NULL);
 	}
+	new->pipe = 0;
 	new->redirection = NULL;
 	new->next = NULL;
 	if (!*head)
@@ -47,12 +36,15 @@ t_cmd	*append_new_cmd(t_cmd **head, t_cmd **last)
 	return (new);
 }
 
-void	parse_words(t_arg **arg, char **bin, int *i)
+void	parse_words(t_arg **arg, char **bin)
 {
+	int	i;
+
+	i = 0;
 	while (*arg && check_token_word((*arg)->type))
 	{
-		bin[*i] = ft_strdup((*arg)->value);
-		(*i)++;
+		bin[i] = ft_strdup((*arg)->value);
+		i++;
 		*arg = (*arg)->next;
 	}
 }
@@ -64,10 +56,14 @@ int	parse_redirection(t_arg **arg, t_redir **redir)
 
 	if (!*arg || !check_token_redir((*arg)->type))
 		return (0);
-	if ((*arg)->type == T_R_OUT || (*arg)->type == T_APPEND)
+	if ((*arg)->type == T_R_OUT)
 		tmp = R_OUT;
-	else
+	else if ((*arg)->type == T_APPEND)
+		tmp = R_APPEND;
+	else if ((*arg)->type == T_R_IN)
 		tmp = R_IN;
+	else if (((*arg)->type == T_HEREDOC))
+		tmp = R_HEREDOC;
 	*arg = (*arg)->next;
 	if (!*arg)
 		return (1);
@@ -82,7 +78,6 @@ int	reassembler(t_data *data)
 	t_cmd	*cmd;
 	t_cmd	*last_cmd;
 	t_arg	*arg;
-	int		i;
 
 	last_cmd = NULL;
 	if (!data || !data->arg)
@@ -94,15 +89,13 @@ int	reassembler(t_data *data)
 		cmd = append_new_cmd(&data->cmd, &last_cmd);
 		if (!cmd)
 			return (1);
-		i = 0;
 		while (arg && arg->type != T_PIPE)
 		{
-			parse_words(&arg, cmd->bin, &i);
+			parse_words(&arg, cmd->bin);
 			if (parse_redirection(&arg, &cmd->redirection))
 				return (1);
 		}
-		if (arg && arg->type == T_PIPE)
-			arg = arg->next;
+		reassembler_check(&arg, &cmd);
 	}
 	return (0);
 }
