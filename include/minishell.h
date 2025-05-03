@@ -6,7 +6,7 @@
 /*   By: engiacom <engiacom@student.42perpignan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 17:22:24 by engiacom          #+#    #+#             */
-/*   Updated: 2025/05/02 12:08:17 by engiacom         ###   ########.fr       */
+/*   Updated: 2025/05/03 05:29:09 by engiacom         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,13 @@ typedef struct s_expansion
 	char	*new_str;
 }	t_expansion;
 
+typedef struct s_io_config
+{
+    int        i;
+    int        index_in;
+    int        index_out;
+}    t_io;
+
 int		read_input(t_data *data);
 
 // Execution
@@ -110,6 +117,8 @@ int		token_r_right(char *c, int i, t_arg **arg);
 int		token_r_left(char *c, int i, t_arg **arg);
 int		token_word(char *c, int i, t_arg **arg, int v);
 void	reassembler_check(t_arg **arg, t_cmd **cmd);
+void	append_arg(char *c, int start, int len, t_arg **arg, t_token_type type);
+int		check_cmd(char *s, t_arg **arg);
 
 void	rl_clear_history(void);
 

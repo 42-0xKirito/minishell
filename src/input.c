@@ -32,7 +32,7 @@ void	print_data_cmds(t_data *data)
 		i = 0;
 		while (cmd->bin && cmd->bin[i])
 		{
-			printf("bin[%d] = %s\n", i, cmd->bin[i]);
+			printf("bin[%d] = %s\n", i, cmd->bin[i] ? cmd->bin[i] : "null");
 			i++;
 		}
 

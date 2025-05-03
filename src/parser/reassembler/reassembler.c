@@ -6,7 +6,7 @@
 /*   By: engiacom <engiacom@student.42perpignan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 11:45:52 by nitadros          #+#    #+#             */
-/*   Updated: 2025/05/02 13:53:58 by engiacom         ###   ########.fr       */
+/*   Updated: 2025/05/03 02:01:30 by engiacom         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,8 @@ void	parse_words(t_arg **arg, char **bin)
 	int	i;
 
 	i = 0;
+	while (bin[i])
+		i++;
 	while (*arg && check_token_word((*arg)->type))
 	{
 		bin[i] = ft_strdup((*arg)->value);
