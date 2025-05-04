@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   free.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: engiacom <engiacom@student.42perpignan.    +#+  +:+       +#+        */
+/*   By: nitadros <nitadros@student.42perpignan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 04:34:50 by engiacom          #+#    #+#             */
-/*   Updated: 2025/05/02 13:55:55 by engiacom         ###   ########.fr       */
+/*   Updated: 2025/05/04 01:11:50 by nitadros         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,13 +36,19 @@ void	ft_lstclear_c(t_cmd **lst)
 	{
 		i = 0;
 		tmp = (*lst)->next;
-		while ((*lst)->bin[i])
-		{
-			free((*lst)->bin[i]);
-			i++;
-		}
 		if ((*lst)->bin)
+		{
+			while ((*lst)->bin[i])
+			{
+				free((*lst)->bin[i]);
+				i++;
+			}
 			free((*lst)->bin);
+		}
+		if ((*lst)->input_fd > 0)
+			close((*lst)->input_fd);
+		if ((*lst)->output_fd > 0)
+			close((*lst)->output_fd);
 		ft_lstclear_r(&(*lst)->redirection);
 		free ((*lst));
 		*lst = tmp;

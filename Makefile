@@ -1,13 +1,3 @@
-# Détection de l'OS
-UNAME := $(shell uname)
-ifeq ($(UNAME), Darwin)
-    READLINE_FLAGS = -I/opt/homebrew/opt/readline/include
-    READLINE_LIBS  = -L/opt/homebrew/opt/readline/lib -lreadline
-else
-    READLINE_FLAGS =
-    READLINE_LIBS  = -lreadline
-endif
-
 # Dossiers
 SRC_DIR         = src
 OBJ_DIR         = obj
@@ -22,8 +12,8 @@ OBJS            = $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRCS))
 NAME            = minishell
 
 # Compilateur et flags
-CC              = cc
-CFLAGS          = -Wall -Wextra -Werror -g -Iinclude $(READLINE_FLAGS)
+CC              = cc -g
+CFLAGS          = -Wall -Wextra -I include
 
 # Commandes
 RM              = rm -rf
@@ -38,14 +28,13 @@ $(LIBFT_A):
 $(OBJ_DIR):
 	$(MKDIR) $(OBJ_DIR)
 
-# Compilation : ne recompile que si le .c est modifié
+# Pour recréer l'arborescence dans obj/
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	@$(MKDIR) $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-# Link final : ne relink que si un .o a changé
 $(NAME): $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) $(LIBFT_A) -o $(NAME) $(READLINE_LIBS)
+	$(CC) $(CFLAGS) $(OBJS) $(LIBFT_A) -o $(NAME) -lreadline
 
 bonus: all
 

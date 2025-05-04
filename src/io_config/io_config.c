@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   io_config.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: engiacom <engiacom@student.42perpignan.    +#+  +:+       +#+        */
+/*   By: nitadros <nitadros@student.42perpignan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 01:47:44 by nitadros          #+#    #+#             */
-/*   Updated: 2025/05/03 05:29:31 by engiacom         ###   ########.fr       */
+/*   Updated: 2025/05/04 03:03:53 by nitadros         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,8 @@
 static void	init_io(t_io *io)
 {
 	io->i = 0;
-	io->index_in = 0;
-	io->index_out = 0;
+	io->index_in = -1;
+	io->index_out = -1;
 }
 
 static void	io_loop(t_redir *tmp, t_io *io)
@@ -36,11 +36,11 @@ int	io_config(t_cmd *cmds)
 	t_io	io;
 	t_redir	*tmp;
 
-	init_io(&io);
 	if (!cmds)
 		return (0);
 	while (cmds)
 	{
+		init_io(&io);
 		if (!cmds->redirection)
 		{
 			cmds = cmds->next;
@@ -51,14 +51,17 @@ int	io_config(t_cmd *cmds)
 		while (tmp)
 		{
 			io_loop(tmp, &io);
+			if (tmp->next)
+				io.i++;
 			tmp = tmp->next;
-			io.i++;
 		}
+		if (!io_redirect(&io, &cmds))
+			return (perror(cmds->redirection[io.index_in].target), 0);
 		cmds = cmds->next;
 	}
-	printf("index_in : %d\nindex_out : %d\n", io.index_in, io.index_out);
 	return (1);
 }
+
 
 // int main(void)
 // {
@@ -114,3 +117,4 @@ int	io_config(t_cmd *cmds)
 
 // 	return (1);
 // }
+

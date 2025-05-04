@@ -6,7 +6,7 @@
 /*   By: engiacom <engiacom@student.42perpignan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 02:34:32 by nitadros          #+#    #+#             */
-/*   Updated: 2025/05/01 18:25:39 by engiacom         ###   ########.fr       */
+/*   Updated: 2025/05/04 07:52:42 by engiacom         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,5 +28,70 @@ int	exec_builtin(char **args)
 		return (0);
 	if (!ft_strcmp(args[0], "echo"))
 		return (echo(args));
+	return (1);
+}
+
+int	execute_commands(t_cmd *cmds, char **envp)
+{
+	t_cmd	*tmp = cmds;
+	pid_t	pid;
+	char	*joined;
+	int		fd[2];
+
+	// Setup des pipes entre commandes
+	while (tmp)
+	{
+		if (tmp->pipe && (tmp->type != R_APPEND || tmp->type != R_OUT))
+		{
+			if (pipe(fd) == -1)
+				return (perror("pipe"), 0);
+			tmp->output_fd = fd[1];
+			tmp->next->input_fd = fd[0];
+		}
+		tmp = tmp->next;
+	}
+
+	tmp = cmds;
+	while (tmp)
+	{
+		pid = fork();
+		if (pid == -1)
+			return (perror("fork"), 0);
+		else if (pid == 0)
+		{
+			if (tmp->input_fd != -1)
+			{
+				dup2(tmp->input_fd, STDIN_FILENO);
+				close(tmp->input_fd);
+			}
+			if (tmp->output_fd != -1)
+			{
+				dup2(tmp->output_fd, STDOUT_FILENO);
+				close(tmp->output_fd);
+			}
+			joined = ft_strjoin("/usr/bin/", tmp->bin[0]);
+			execve(joined, tmp->bin, envp);
+			perror("execve");
+			free(joined);
+			exit(EXIT_FAILURE);
+		}
+		else
+		{
+			// Fermer les fd inutiles dans le parent
+			if (tmp->input_fd != -1)
+				close(tmp->input_fd);
+			if (tmp->output_fd != -1)
+				close(tmp->output_fd);
+		}
+		tmp = tmp->next;
+	}
+
+	// Attente de tous les enfants à la fin
+	tmp = cmds;
+	while (tmp)
+	{
+		wait(NULL);
+		tmp = tmp->next;
+	}
 	return (1);
 }
