@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   disassembler.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nitadros <nitadros@student.42perpignan.    +#+  +:+       +#+        */
+/*   By: engiacom <engiacom@student.42perpignan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 01:57:12 by engiacom          #+#    #+#             */
-/*   Updated: 2025/05/04 07:06:12 by nitadros         ###   ########.fr       */
+/*   Updated: 2025/05/05 03:53:55 by engiacom         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ int	token_var_word(t_parse *parse, t_arg **arg)
 			append_arg(parse, k, arg, T_VAR);
 		}
 		else
-			return (token_word(parse, arg, 1));
+			return (check_cmd(parse, arg, 1));
 		return (k);
 	}
 	return (0);
@@ -123,11 +123,10 @@ int	parser(char *line, t_arg **arg)
 		parse.i += token_r_left(&parse, arg);
 		parse.i += token_r_right(&parse, arg);
 		parse.i += token_other(&parse, arg);
-		if (ft_lstlast_a(*arg)->type == T_PIPE)
-			parse.i += check_cmd(&parse, arg, parse.i);
-		parse.i += token_var_word(&parse, arg);
-		parse.i += token_word(&parse, arg, 0);
 		parse.i += token_quote(&parse, arg);
+		parse.i += check_cmd(&parse, arg, parse.i);
+		parse.i += token_var_word(&parse, arg);
+		//parse.i += token_word(&parse, arg, 0);
 	}
 	return (0);
 }

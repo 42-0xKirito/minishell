@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils2.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nitadros <nitadros@student.42perpignan.    +#+  +:+       +#+        */
+/*   By: engiacom <engiacom@student.42perpignan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 03:09:30 by engiacom          #+#    #+#             */
-/*   Updated: 2025/05/04 06:57:12 by nitadros         ###   ########.fr       */
+/*   Updated: 2025/05/05 02:37:55 by engiacom         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ void	append_arg(t_parse *parse, int len, t_arg **arg, t_token_type type)
 {
 	char	*s;
 	
-	s = ft_substr(parse->s, parse->i, len); // carré
+	s = ft_substr(parse->s, parse->i, len);
 	if (!s)
 		return ;
 	ft_lstadd_back_m(arg, ft_lstnew_m(type, s));

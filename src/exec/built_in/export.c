@@ -1,23 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strcmp.c                                        :+:      :+:    :+:   */
+/*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nitadros <nitadros@student.42perpignan.    +#+  +:+       +#+        */
+/*   By: engiacom <engiacom@student.42perpignan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/01 16:57:32 by engiacom          #+#    #+#             */
-/*   Updated: 2025/05/04 17:05:57 by nitadros         ###   ########.fr       */
+/*   Created: 2025/05/04 23:41:43 by engiacom          #+#    #+#             */
+/*   Updated: 2025/05/05 02:37:54 by engiacom         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/libft.h"
 
-int	ft_strcmp(const char *s1, const char *s2)
-{
-	while (*s1 && *s2 && *s1 == *s2)
-	{
-		s1++;
-		s2++;
-	}
-	return ((unsigned char)*s1 - (unsigned char)*s2);
-}
+#include "minishell.h"
+
+// int	export(char **arg, char **envp)
+// {
+// 	int	i;
+
+// 	i = 0;
+// 	while ()
+// }

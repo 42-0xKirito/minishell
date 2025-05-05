@@ -3,19 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   expanser.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nitadros <nitadros@student.42perpignan.    +#+  +:+       +#+        */
+/*   By: engiacom <engiacom@student.42perpignan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 12:15:52 by nitadros          #+#    #+#             */
-/*   Updated: 2025/05/04 04:54:34 by nitadros         ###   ########.fr       */
+/*   Updated: 2025/05/05 03:52:22 by engiacom         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static void	expand_utils(t_expansion *exp, int *i, int *k)
+static void	expand_utils(t_expansion *exp, int *i, int *k, t_data *data)
 {
 	exp->ret = ft_substr(exp->new_str, *i + 1, *k - 1);
-	exp->env = getenv(exp->ret);
+	if (ft_strncmp(exp->ret, "\?", 1) == 0)
+		exp->env = ft_itoa(data->last_code);
+	else
+		exp->env = getenv(exp->ret);
 	free(exp->ret);
 	if (!exp->env)
 		exp->env = "";
@@ -40,7 +43,7 @@ static void	init_expansions(t_expansion *exp, char *str)
 	exp->new_str = ft_strdup(str);
 }
 
-static void	expand(char *str, t_arg **arg)
+static void	expand(char *str, t_arg **arg, t_data *data)
 {
 	int			i;
 	int			k;
@@ -52,11 +55,16 @@ static void	expand(char *str, t_arg **arg)
 	{
 		if (exp.new_str[i] == '$')
 		{
-			k = 1;
-			while (exp.new_str[i + k] && (ft_isalnum(exp.new_str[i + k])
-					|| exp.new_str[i + k] == '_'))
-				k++;
-			expand_utils(&exp, &i, &k);
+			if (exp.new_str[i + 1] == '?')
+				k = 2;
+			else
+			{
+				k = 1;
+				while (exp.new_str[i + k] &&
+					(ft_isalnum(exp.new_str[i + k]) || exp.new_str[i + k] == '_'))
+					k++;
+			}
+			expand_utils(&exp, &i, &k, data);
 			i += ft_strlen(exp.env);
 			continue ;
 		}
@@ -69,13 +77,21 @@ static void	expand(char *str, t_arg **arg)
 static int	need_expansion(char *str)
 {
 	int	i;
+	int	mark;
 
 	i = 0;
+	mark = 0;
 	while (str[i])
 	{
+		if (str[i] == '"')
+			mark = 1;
+		else if (str[i] == '"' && mark == 1)
+			mark = 0;
+		if (str[i] == '\'' && mark != 1)
+			return (0);
 		if (str[i] == '$' && str[i + 1])
 		{
-			if (ft_isalpha(str[i + 1]) || str[i + 1] == '_')
+			if (ft_isalpha(str[i + 1]) || str[i + 1] == '_' || str[i + 1] == '?')
 				return (1);
 		}
 		i++;
@@ -83,7 +99,7 @@ static int	need_expansion(char *str)
 	return (0);
 }
 
-void	expanser(t_arg **arg)
+void	expanser(t_arg **arg, t_data *data)
 {
 	t_arg	*curr;
 
@@ -92,10 +108,10 @@ void	expanser(t_arg **arg)
 	curr = *arg;
 	while (curr)
 	{
-		if (curr->type == T_DQUOTE || curr->type == T_VAR)
+		if (curr->type == T_DQUOTE || curr->type == T_VAR || curr->type == T_WORD)
 		{
 			if (need_expansion(curr->value))
-				expand(curr->value, &curr);
+				expand(curr->value, &curr, data);
 		}
 		curr = curr->next;
 	}
