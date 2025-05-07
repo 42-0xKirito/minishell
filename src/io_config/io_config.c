@@ -6,7 +6,7 @@
 /*   By: nitadros <nitadros@student.42perpignan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 01:47:44 by nitadros          #+#    #+#             */
-/*   Updated: 2025/05/04 20:31:10 by nitadros         ###   ########.fr       */
+/*   Updated: 2025/05/06 19:01:37 by nitadros         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ int	io_config(t_cmd *cmds)
 		if (!cmds->redirection)
 		{
 			cmds = cmds->next;
-			continue;
+			continue ;
 		}
 		io.i = 0;
 		tmp = cmds->redirection;
@@ -56,12 +56,11 @@ int	io_config(t_cmd *cmds)
 			tmp = tmp->next;
 		}
 		if (!io_redirect(&io, &cmds))
-			return (perror(""), 0);
+			return (perror("IO_confgig"), 0);
 		cmds = cmds->next;
 	}
 	return (1);
 }
-
 
 // int main(void)
 // {
@@ -77,7 +76,7 @@ int	io_config(t_cmd *cmds)
 // 	cmds->output_fd = 0;
 // 	cmds->pipe = 0;
 // 	cmds->next = NULL;
-	
+
 // 	cmds->redirection->type = R_APPEND;
 // 	cmds->redirection->target = "target1";
 // 	cmds->redirection->next = malloc(sizeof(t_redir));
@@ -117,4 +116,3 @@ int	io_config(t_cmd *cmds)
 
 // 	return (1);
 // }
-

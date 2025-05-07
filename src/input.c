@@ -23,7 +23,6 @@ void	print_data_cmds(t_data *data)
 		printf("Aucune commande.\n");
 		return;
 	}
-
 	cmd = data->cmd;
 	n = 1;
 	while (cmd)
@@ -96,17 +95,19 @@ int	read_input(t_data *data, char **envp)
 				slash(&data->arg);
 				reassembler(data);
 				if (io_config(data->cmd))
+				{
+					// print_data_cmds(data);
 					data->last_code = execute_commands(data->cmd, envp);
+				}
 				else
 					data->last_code = 1;
-				print_data_cmds(data);
 			}
 			else
-				printf("rl_on_new_line\n");
+				continue ;
 		}
 		else
 		{
-			printf("rl_on_new_line\n");
+			continue ;
 		}
 		free(line);
 		ft_lstclear_m(&data->arg);

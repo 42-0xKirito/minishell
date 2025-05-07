@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: engiacom <engiacom@student.42perpignan.    +#+  +:+       +#+        */
+/*   By: nitadros <nitadros@student.42perpignan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 17:22:24 by engiacom          #+#    #+#             */
-/*   Updated: 2025/05/05 02:37:56 by engiacom         ###   ########.fr       */
+/*   Updated: 2025/05/07 04:17:54 by nitadros         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,7 @@ typedef struct s_cmd
 	t_redir_type	type;
 	int				input_fd;
 	int				output_fd;
+	int				exec;
 	struct s_cmd	*next;
 }	t_cmd;
 
@@ -73,6 +74,7 @@ typedef struct s_data
 {
 	t_arg	*arg;
 	t_cmd	*cmd;
+	char	**envp;
 	int		last_code;
 }	t_data;
 
@@ -152,5 +154,11 @@ int 	heredoc(t_redir *redir);
 void	slash(t_arg **arg);
 // Execution
 int	execute_commands(t_cmd *cmds, char **envp);
+
+char	**ft_export(char **bin, char **env);
+char	**ft_unset(char **bin, char **env);
+char	**duplicate_env(char *str, char **env);
+char	*ft_pwd(char **bin);
+char	**add_var(char *str, char **env);
 
 #endif
