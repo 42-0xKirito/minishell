@@ -6,18 +6,25 @@
 /*   By: nitadros <nitadros@student.42perpignan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 17:22:24 by engiacom          #+#    #+#             */
-/*   Updated: 2025/05/07 04:17:54 by nitadros         ###   ########.fr       */
+/*   Updated: 2025/05/11 14:36:24 by nitadros         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
+# define BOLD    "\001\033[1m\002"
+# define GREEN "\001\033[0;32m\002"
+# define RED   "\001\033[31m\002"
+# define BLUE  "\001\033[0;34m\002"
+# define RESET "\001\033[0m\002"
 
 # include "../libft/include/libft.h"
 # include <readline/readline.h>
 # include <readline/history.h>
-# include <fcntl.h>
 # include <sys/wait.h>
+# include <fcntl.h>
+# include <dirent.h>
+# include <signal.h>
 
 // Disassembler
 typedef enum e_token_type
@@ -81,6 +88,8 @@ typedef struct s_data
 // ISOLATED
 typedef struct s_expansion
 {
+	int		i;
+	int		k;
 	char	*ret;
 	char	*env;
 	char	*left;
@@ -116,13 +125,22 @@ typedef struct s_parse
 	char	*s;
 }	t_parse;
 
+typedef struct s_dequote
+{
+	int		q;
+	int		dq;
+	int		end;
+	char	*str;
+}	t_dequote;
 
-int		read_input(t_data *data, char **envp);
+int		read_input(t_data *data);
 
 // Execution
 int		is_builtin(const char *cmd);
-int		exec_builtin(char **args);
+char	**exec_env_builtin(char **args, char **env);
+void	exec_void_builtin(char **args, char **env);
 int		echo(char **arg);
+int		pipe_creation(t_cmd *cmd);
 
 // Parser
 void	ft_lstadd_back_m(t_arg **arg, t_arg *new);
@@ -147,18 +165,26 @@ int		token_r_left(t_parse *parse, t_arg **arg);
 int		token_word(t_parse *parse, t_arg **arg, int v);
 void	reassembler_check(t_arg **arg, t_cmd **cmd);
 void	append_arg(t_parse *parse, int len, t_arg **arg, t_token_type type);
-int		check_cmd(t_parse *parse, t_arg **arg, int o);
+int		check_cmd(t_parse *parse, t_arg **arg);
 int		io_config(t_cmd *cmds);
 int		io_redirect(t_io *io, t_cmd **cmd);
-int 	heredoc(t_redir *redir);
+int		heredoc(t_redir *redir);
 void	slash(t_arg **arg);
 // Execution
-int	execute_commands(t_cmd *cmds, char **envp);
+int		execute_commands(t_data *data);
 
+char	**ft_cd(char **bin, char **env);
 char	**ft_export(char **bin, char **env);
 char	**ft_unset(char **bin, char **env);
+void	ft_env(char **env);
 char	**duplicate_env(char *str, char **env);
-char	*ft_pwd(char **bin);
+void	ft_pwd(char **bin);
 char	**add_var(char *str, char **env);
+char	*find_path(char **env, char *bin);
+char	*find_var(char **env, char *str);
+
+void	init_parse(t_parse *parse);
+int		check_type(t_arg *arg);
+int		check_type2(t_arg *arg);
 
 #endif

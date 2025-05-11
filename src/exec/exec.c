@@ -6,109 +6,136 @@
 /*   By: nitadros <nitadros@student.42perpignan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 02:34:32 by nitadros          #+#    #+#             */
-/*   Updated: 2025/05/06 22:10:05 by nitadros         ###   ########.fr       */
+/*   Updated: 2025/05/11 12:12:21 by nitadros         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-// int	is_builtin(const char *cmd)
-// {
-// 	if (!cmd)
-// 		return (0);
-// 	return (!ft_strcmp(cmd, "echo") || !ft_strcmp(cmd, "cd")
-// 		|| !ft_strcmp(cmd, "pwd") || !ft_strcmp(cmd, "export")
-// 		|| !ft_strcmp(cmd, "unset") || !ft_strcmp(cmd, "env")
-// 		|| !ft_strcmp(cmd, "exit"));
-// }
-
-// int	exec_builtin(char **args)
-// {
-// 	if (!args || !args[0])
-// 		return (0);
-// 	if (!ft_strcmp(args[0], "echo"))
-// 		return (echo(args));
-// 	return (1);
-// }
-
-int	execute_commands(t_cmd *cmds, char **envp)
+int	init_env_builtin(t_data **data, t_cmd **cmd)
 {
-	t_cmd	*tmp;
-	pid_t	pid;
-	char	*joined;
-	int		fd[2];
-	int		status_code;
-	int		i;
+	int	saved_in;
+	int	saved_out;
 
-	tmp = cmds;
-	while (tmp)
+	saved_in = dup(STDIN_FILENO);
+	saved_out = dup(STDOUT_FILENO);
+	if ((*cmd)->input_fd != -1)
 	{
-		if (tmp->pipe && (tmp->type != R_APPEND && tmp->type != R_OUT))
-		{
-			if (!tmp->exec)
-			{
-				tmp = tmp->next;
-				continue ;
-			}
-			if (pipe(fd) == -1)
-				return (perror("pipe"), 1);
-			tmp->output_fd = fd[1];
-			if (tmp->next && tmp->next->input_fd == -1)
-				tmp->next->input_fd = fd[0];
-		}
-		tmp = tmp->next;
+		dup2((*cmd)->input_fd, STDIN_FILENO);
+		close((*cmd)->input_fd);
 	}
-	tmp = cmds;
-	while (tmp)
+	if ((*cmd)->output_fd != -1)
 	{
-		if (!tmp->exec)
-		{
-			tmp = tmp->next;
-			continue ;
-		}
-		pid = fork();
-		if (pid == -1)
-			return (perror("fork"), 1);
-		else if (pid == 0)
-		{
-			if (tmp->input_fd != -1 && tmp->input_fd != STDIN_FILENO)
-			{
-				dup2(tmp->input_fd, STDIN_FILENO);
-				close(tmp->input_fd);
-			}
-			if (tmp->output_fd != -1 && tmp->output_fd != STDOUT_FILENO)
-			{
-				dup2(tmp->output_fd, STDOUT_FILENO);
-				close(tmp->output_fd);
-			}
-			if (tmp->next && tmp->next->input_fd > 2)
-				close(tmp->next->input_fd);
-			i = 0;
-			while (tmp->bin[i] && !tmp->bin[i][0])
-				i++;
-			joined = ft_strjoin("/usr/bin/", tmp->bin[i]);
-			execve(joined, &tmp->bin[i], envp);
-			perror("");
-			free(joined);
-			exit(127);
-		}
-		else
-		{
-			if (tmp->input_fd != -1 && tmp->input_fd != STDIN_FILENO)
-				close(tmp->input_fd);
-			if (tmp->output_fd != -1 && tmp->output_fd != STDOUT_FILENO)
-				close(tmp->output_fd);
-		}
-		tmp = tmp->next;
+		dup2((*cmd)->output_fd, STDOUT_FILENO);
+		close((*cmd)->output_fd);
 	}
-	tmp = cmds;
-	while (tmp)
+	(*data)->envp = exec_env_builtin((*cmd)->bin, (*data)->envp);
+	dup2(saved_in, STDIN_FILENO);
+	dup2(saved_out, STDOUT_FILENO);
+	close(saved_in);
+	close(saved_out);
+	return (1);
+}
+
+void	exec_child_process(t_cmd *cmd, t_data *data)
+{
+	int		i;
+	char	*path;
+
+	i = 0;
+	if (is_builtin(cmd->bin[0]) == 2)
 	{
-		
-		wait(&status_code);
-		status_code = status_code % 127;
-		tmp = tmp->next;
+		exec_void_builtin(cmd->bin, data->envp);
+		exit(0);
+	}
+	while (cmd->bin[i] && !cmd->bin[i][0])
+		i++;
+	path = find_path(data->envp, cmd->bin[i]);
+	if (!path)
+	{
+		perror("command not found");
+		exit(127);
+	}
+	execve(path, &cmd->bin[i], data->envp);
+	perror("");
+	exit(127);
+}
+
+void	init_child_process(t_cmd *cmd, t_data *data)
+{
+	t_cmd	*c;
+
+	if (cmd->input_fd != -1)
+	{
+		dup2(cmd->input_fd, STDIN_FILENO);
+		close(cmd->input_fd);
+	}
+	if (cmd->output_fd != -1)
+	{
+		dup2(cmd->output_fd, STDOUT_FILENO);
+		close(cmd->output_fd);
+	}
+	c = data->cmd;
+	while (c)
+	{
+		if (c != cmd)
+		{
+			if (c->input_fd > 2)
+				close(c->input_fd);
+			if (c->output_fd > 2)
+				close(c->output_fd);
+		}
+		c = c->next;
+	}
+	exec_child_process(cmd, data);
+}
+
+int	execute_loop(t_cmd *cmd, t_data *data, pid_t *pid)
+{
+	if (!cmd->exec)
+		return (0);
+	if (is_builtin(cmd->bin[0]) == 1)
+	{
+		init_env_builtin(&data, &cmd);
+		return (0);
+	}
+	*pid = fork();
+	if (*pid == -1)
+		return (perror("fork"), 1);
+	if (*pid == 0)
+		init_child_process(cmd, data);
+	else
+	{
+		if (cmd->input_fd > 2)
+			close(cmd->input_fd);
+		if (cmd->output_fd > 2)
+			close(cmd->output_fd);
+	}
+	return (0);
+}
+
+int	execute_commands(t_data *data)
+{
+	t_cmd	*cmd;
+	pid_t	pid;
+	int		status_code;
+
+	status_code = 0;
+	cmd = data->cmd;
+	pipe_creation(cmd);
+	cmd = data->cmd;
+	while (cmd)
+	{
+		if (execute_loop(cmd, data, &pid))
+			return (1);
+		cmd = cmd->next;
+	}
+	cmd = data->cmd;
+	while (cmd)
+	{
+		if (cmd->exec && is_builtin(cmd->bin[0]) != 1)
+			wait(&status_code);
+		cmd = cmd->next;
 	}
 	return (status_code);
 }
-

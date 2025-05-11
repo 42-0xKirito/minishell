@@ -1,39 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pwd.c                                              :+:      :+:    :+:   */
+/*   check_type.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nitadros <nitadros@student.42perpignan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/07 03:30:44 by nitadros          #+#    #+#             */
-/*   Updated: 2025/05/11 12:06:48 by nitadros         ###   ########.fr       */
+/*   Created: 2025/05/11 03:46:04 by nitadros          #+#    #+#             */
+/*   Updated: 2025/05/11 03:46:26 by nitadros         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	ft_pwd(char **bin)
+int	check_type(t_arg *arg)
 {
-	char	*path;
-
-	if (bin[1])
-	{
-		printf("Too many arguments\n");
-		return ;
-	}
-	path = getcwd(NULL, 0);
-	printf("%s\n", path);
-	free(path);
-	return ;
+	if (arg->type == T_WORD || arg->type == T_QUOTE
+		|| arg->type == T_DQUOTE || arg->type == T_VAR
+		|| check_token_redir(arg->type))
+		return (1);
+	return (0);
 }
 
-// int main()
-// {
-// 	char *bin[2];
-
-// 	bin[0] = "pwd";
-// 	bin[1] = NULL;
-// 	char *path = ft_pwd(bin);
-// 	printf("%s\n", path);
-// 	free(path);
-// }
+int	check_type2(t_arg *arg)
+{
+	if ((!arg->next || !(arg->next->type == T_WORD
+				|| arg->next->type == T_QUOTE
+				|| arg->next->type == T_DQUOTE)))
+		return (1);
+	return (0);
+}

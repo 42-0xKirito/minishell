@@ -6,7 +6,7 @@
 /*   By: nitadros <nitadros@student.42perpignan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 01:57:12 by engiacom          #+#    #+#             */
-/*   Updated: 2025/05/06 18:56:36 by nitadros         ###   ########.fr       */
+/*   Updated: 2025/05/11 04:24:23 by nitadros         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,35 +95,19 @@ int	token_other(t_parse *parse, t_arg **arg)
 	return (0);
 }
 
-void	init_parse(t_parse *parse)
-{
-	parse->i = 0;
-	parse->start = 0;
-	parse->len = 0;
-}
-
-t_arg	*ft_lstlast_a(t_arg *lst)
-{
-	if (lst == NULL)
-		return (lst);
-	while (lst->next != NULL)
-		lst = lst->next;
-	return (lst);
-}
-
 int	parser(char *line, t_arg **arg)
 {
 	t_parse	parse;
 
 	parse.s = line;
 	init_parse(&parse);
-	parse.i += check_cmd(&parse, arg, 0);
+	parse.i += check_cmd(&parse, arg);
 	while (line[parse.i])
 	{
 		parse.i += token_r_left(&parse, arg);
 		parse.i += token_r_right(&parse, arg);
 		parse.i += token_other(&parse, arg);
-		parse.i += check_cmd(&parse, arg, parse.i);
+		parse.i += check_cmd(&parse, arg);
 		parse.i += token_var_word(&parse, arg);
 		parse.i += token_quote(&parse, arg);
 	}
