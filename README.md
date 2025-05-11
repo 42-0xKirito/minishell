@@ -1,4 +1,4 @@
-# minishell
+# Minishell
 
 💻 Créer un shell simplifié capable d'exécuter des commandes Unix.
 
