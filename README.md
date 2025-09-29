@@ -1,20 +1,20 @@
 # Minishell
 
-💻 Créer un shell simplifié capable d'exécuter des commandes Unix.
+💻 Create a simplified shell capable of executing Unix commands.
 
-## Objectifs
-- Implémenter un interpréteur de commandes minimaliste
-- Gérer les pipes (`|`), redirections (`>`, `<`, `>>`, `<<`)
-- Supporter les builtins (`cd`, `echo`, `export`, `unset`, `env`, `exit`)
-- Gérer correctement les signaux (`CTRL+C`, `CTRL+D`, `CTRL+\`)
-- Respecter les règles de gestion de la mémoire (pas de leaks)
+## Objectives
+- Implement a minimalist command-line interpreter
+- Handle pipes (`|`), redirections (`>`, `<`, `>>`, `<<`)
+- Support builtins (`cd`, `echo`, `export`, `unset`, `env`, `exit`)
+- Correctly handle signals (`CTRL+C`, `CTRL+D`, `CTRL+\`)
+- Follow proper memory management rules (no leaks)
 
-## Concepts clés
-- Processus et fork/execve
-- Pipes et redirections
-- Gestion fine des signaux
-- Parsing d'input utilisateur
-- Gestion d'environnements (`env`)
+## Key Concepts
+- Processes and fork/execve
+- Pipes and redirections
+- Fine-grained signal handling
+- User input parsing
+- Environment management (`env`)
 
-## Sujet du projet
-Vous pouvez consulter le sujet officiel ici : [📑 Sujet PDF](./minishell.subject.pdf)
+## Project Subject
+You can check the official subject here: [📑 Subject PDF](./minishell.subject.pdf)
